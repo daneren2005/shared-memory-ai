@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>shared-memory-ai examples</title>
+		<link rel="stylesheet" href="/src/style.css" />
+	</head>
+	<body>
+		<header>
+			<h1>shared-memory-ai</h1>
+			<nav id="examples"></nav>
+		</header>
+		<main>
+			<section id="viewport" aria-label="Example viewport">
+				<p>Empty world</p>
+			</section>
+			<aside>
+				<h2 id="example-title"></h2>
+				<p id="example-description"></p>
+				<dl>
+					<dt>Status</dt>
+					<dd id="status">Loading</dd>
+					<dt>Entities</dt>
+					<dd id="entity-count">0</dd>
+					<dt>Game time</dt>
+					<dd id="game-time">0 ms</dd>
+				</dl>
+			</aside>
+		</main>
+		<script type="module" src="/src/main.ts"></script>
+	</body>
+</html>
