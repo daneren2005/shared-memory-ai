@@ -1,0 +1,33 @@
+{
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"strict": true,
+		"declaration": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"outDir": "./dist",
+		"rootDir": ".",
+		"lib": [
+			"esnext",
+			"dom",
+			"dom.iterable"
+		],
+		"types": [
+			"vitest/globals",
+			"node"
+		],
+		"paths": {
+			"@daneren2005/shared-memory-ai": [
+				"./src/index.ts"
+			]
+		}
+	},
+	"include": [
+		"src/**/*.ts",
+		"examples/**/*.ts",
+		"*.config.ts"
+	]
+}
