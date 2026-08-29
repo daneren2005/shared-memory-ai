@@ -22,6 +22,9 @@
 		"paths": {
 			"@daneren2005/shared-memory-ai": [
 				"./src/index.ts"
+			],
+			"@daneren2005/shared-memory-ai/worker": [
+				"./src/worker.ts"
 			]
 		}
 	},

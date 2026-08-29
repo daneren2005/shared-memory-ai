@@ -4,6 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>shared-memory-ai examples</title>
+		<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M5 16h22M16 5v22' stroke='%237DD3FC' stroke-width='4'/><circle cx='16' cy='16' r='5' fill='%23FB7185'/></svg>" />
 		<link rel="stylesheet" href="/src/style.css" />
 	</head>
 	<body>
@@ -12,20 +13,22 @@
 			<nav id="examples"></nav>
 		</header>
 		<main>
-			<section id="viewport" aria-label="Example viewport">
-				<p>Empty world</p>
-			</section>
-			<aside>
+			<canvas id="game" aria-label="Interactive AI example"></canvas>
+			<aside id="panel">
 				<h2 id="example-title"></h2>
 				<p id="example-description"></p>
-				<dl>
-					<dt>Status</dt>
-					<dd id="status">Loading</dd>
-					<dt>Entities</dt>
-					<dd id="entity-count">0</dd>
-					<dt>Game time</dt>
-					<dd id="game-time">0 ms</dd>
-				</dl>
+				<section>
+					<h3>Example</h3>
+					<div id="example-controls"></div>
+				</section>
+				<section>
+					<h3>Simulation</h3>
+					<div id="simulation-controls"></div>
+				</section>
+				<section>
+					<h3>Stats</h3>
+					<dl id="stats"></dl>
+				</section>
 			</aside>
 		</main>
 		<script type="module" src="/src/main.ts"></script>
