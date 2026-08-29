@@ -16,12 +16,12 @@ import {
 	randomSelector,
 	selector,
 	sequence,
-} from '../../worker';
+} from '@daneren2005/shared-memory-ai/worker';
 import type {
 	AIAction,
 	AIStatus as AIStatusValue,
 	BehaviorTreeMemory,
-} from '../../worker';
+} from '@daneren2005/shared-memory-ai/worker';
 
 interface StatusComponent extends BaseComponent {
 	block?: Uint32Array

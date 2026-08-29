@@ -62,6 +62,6 @@ An abstract AI runtime built on `@daneren2005/shared-memory-ecs`. The published 
 - An `AIContext` is reused across the agents in one run and must not be retained by actions. Persistent action state belongs in an AI-owned component or the provided entity memory store.
 - The AI worker may directly write only AI-owned component fields and exclusively owned heap structures. `WorkerEventPort` is limited to entity and system events intended for presentation consequences.
 - Example transactions validate every precondition before applying their complete mutation set. They demonstrate an ownership pattern; they are not package API.
-- Examples alias both the main and worker package entries to source files.
+- Vitest and the examples app alias both the main and worker package entries to source files, so consumer-style imports do not depend on a prebuilt `dist` directory.
 - Example worlds are replaceable runtimes. Selection or restart destroys the previous world and workers before initializing the replacement.
 - Rendering is read-only over shared blocks. Pointer input moves only the main-thread-owned player transform; it never writes the AI-owned agent transform or destination fields.
