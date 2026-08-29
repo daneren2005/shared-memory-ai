@@ -4,3 +4,4 @@ examples/dist
 *.log
 .claude
 NOTES.md
+/plans/

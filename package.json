@@ -21,6 +21,12 @@
 				"types": "./dist/index.d.ts",
 				"default": "./dist/index.js"
 			}
+		},
+		"./worker": {
+			"import": {
+				"types": "./dist/worker.d.ts",
+				"default": "./dist/worker.js"
+			}
 		}
 	},
 	"files": [
@@ -41,6 +47,7 @@
 	},
 	"devDependencies": {
 		"@daneren2005/shared-memory-ecs": "1.5.1",
+		"@daneren2005/shared-memory-objects": "1.4.0",
 		"@semantic-release/git": "10.0.1",
 		"@stylistic/eslint-plugin": "5.10.0",
 		"@types/node": "26.1.1",
