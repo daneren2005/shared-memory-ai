@@ -20,7 +20,7 @@ const behavior = createAIUpdate({
 	},
 });
 
-// Pass behavior.update to the ECS ComponentSystem and its worker entry.
+// Pass behavior.update to the ECS EntityWorkerSystem and its worker entry.
 ```
 
 Actions can inspect `context.agents` and `context.queries.get(name)` as both iterable arrays and entity-ID maps. The context is reused during a run, so actions must keep resumable state in shared components or their per-entity memory rather than retaining the context.
@@ -28,7 +28,7 @@ Actions can inspect `context.agents` and `context.queries.get(name)` as both ite
 Worker entries should import from the worker-only subpath:
 
 ```ts
-import { createComponentWorker } from '@daneren2005/shared-memory-ecs/worker';
+import { createEntitySystemWorker } from '@daneren2005/shared-memory-ecs/worker';
 import { createAIUpdate, AIStatus } from '@daneren2005/shared-memory-ai/worker';
 
 const behavior = createAIUpdate({
@@ -38,7 +38,7 @@ const behavior = createAIUpdate({
 		return context.entityId > 0 ? AIStatus.running : AIStatus.failed;
 	},
 });
-createComponentWorker(self, behavior.update);
+createEntitySystemWorker(self, behavior.update);
 ```
 
 The worker API includes:

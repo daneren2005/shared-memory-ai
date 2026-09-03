@@ -1,4 +1,4 @@
-import { ComponentSystem } from '@daneren2005/shared-memory-ecs';
+import { EntityWorkerSystem } from '@daneren2005/shared-memory-ecs';
 import type { BaseWorld } from '@daneren2005/shared-memory-ecs';
 
 import { createPatrolChaseUpdate } from '../../src/__tests__/examples/patrol-chase';
@@ -9,7 +9,7 @@ import type { ExampleComponents, ExampleRegistry } from './patrol-components';
 
 const patrolBehavior = createPatrolChaseUpdate();
 
-export class PatrolChaseSystem extends ComponentSystem<ExampleComponents, PatrolChaseBlocks> {
+export class PatrolChaseSystem extends EntityWorkerSystem<ExampleComponents, PatrolChaseBlocks> {
 	constructor(world: BaseWorld<ExampleRegistry>, forceMainThread: boolean) {
 		super(world, {
 			name: 'PatrolChaseSystem',
@@ -24,7 +24,7 @@ export class PatrolChaseSystem extends ComponentSystem<ExampleComponents, Patrol
 	}
 }
 
-export class MovementSystem extends ComponentSystem<ExampleComponents, MovementBlocks, MovementWorld> {
+export class MovementSystem extends EntityWorkerSystem<ExampleComponents, MovementBlocks, MovementWorld> {
 	constructor(world: BaseWorld<ExampleRegistry>, public speed: number, forceMainThread: boolean) {
 		super(world, {
 			name: 'MovementSystem',

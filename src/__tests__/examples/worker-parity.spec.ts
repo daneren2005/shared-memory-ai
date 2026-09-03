@@ -1,5 +1,5 @@
-import { BaseWorld, ComponentSystem } from '@daneren2005/shared-memory-ecs';
-import type { ComponentSystemConfig } from '@daneren2005/shared-memory-ecs';
+import { BaseWorld, EntityWorkerSystem } from '@daneren2005/shared-memory-ecs';
+import type { EntityWorkerSystemConfig } from '@daneren2005/shared-memory-ecs';
 
 import { AIControllerIndex, createPatrolChaseUpdate } from './patrol-chase';
 import type { PatrolChaseBlocks } from './patrol-chase';
@@ -7,10 +7,10 @@ import { DesiredMovementIndex } from './movement';
 import { exampleRegistry } from '../../../examples/src/patrol-components';
 import type { ExampleComponents, ExampleRegistry } from '../../../examples/src/patrol-components';
 
-class TestPatrolSystem extends ComponentSystem<ExampleComponents, PatrolChaseBlocks> {
+class TestPatrolSystem extends EntityWorkerSystem<ExampleComponents, PatrolChaseBlocks> {
 	constructor(world: BaseWorld<ExampleRegistry>, forceMainThread: boolean) {
 		const behavior = createPatrolChaseUpdate();
-		const options: ComponentSystemConfig<ExampleComponents, PatrolChaseBlocks> = {
+		const options: EntityWorkerSystemConfig<ExampleComponents, PatrolChaseBlocks> = {
 			name: forceMainThread ? 'MainPatrol' : 'WorkerPatrol',
 			required: ['aiController', 'desiredMovement', 'movementProtocol', 'patrol', 'transform'],
 			queries: { players: { required: ['player', 'transform'] } },

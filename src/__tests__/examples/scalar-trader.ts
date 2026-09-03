@@ -1,4 +1,4 @@
-import type { BaseComponent, ComponentMap, ComponentSystemWorld, EntityUpdateComponents } from '@daneren2005/shared-memory-ecs';
+import type { BaseComponent, ComponentMap, EntityWorkerSystemWorld, EntityUpdateComponents } from '@daneren2005/shared-memory-ecs';
 import { AIStatus, createAIUpdate } from '@daneren2005/shared-memory-ai/worker';
 
 import { createScalarTradeTransactions, StationTradeIndex, TraderIndex, TradeResult } from './trader';
@@ -16,7 +16,7 @@ export interface ScalarTraderBlocks extends EntityUpdateComponents<ScalarTraderC
 	trader: Float64Array
 }
 
-export function createScalarTraderUpdate<W extends ComponentSystemWorld = ComponentSystemWorld>(quantity: number, unitPrice: number) {
+export function createScalarTraderUpdate<W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld>(quantity: number, unitPrice: number) {
 	const transactions = createScalarTradeTransactions();
 	return createAIUpdate<ScalarTraderComponents, ScalarTraderBlocks, W>({
 		createMemory: () => ({}),

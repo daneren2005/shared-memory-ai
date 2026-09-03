@@ -1,7 +1,7 @@
 import type {
 	BaseComponent,
 	ComponentMap,
-	ComponentSystemWorld,
+	EntityWorkerSystemWorld,
 	EntityUpdateComponents,
 } from '@daneren2005/shared-memory-ecs';
 import { AIStatus, createAIUpdate, createFSM } from '@daneren2005/shared-memory-ai/worker';
@@ -104,7 +104,7 @@ function runChase(context: PatrolContext): AIStatusValue {
 	return AIStatus.running;
 }
 
-export function createPatrolChaseUpdate<W extends ComponentSystemWorld = ComponentSystemWorld>() {
+export function createPatrolChaseUpdate<W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld>() {
 	const fsm = createFSM<PatrolChaseComponents, Record<string, never>, PatrolChaseBlocks>({
 		getState: context => context.components.aiController[AIControllerIndex.state],
 		setState: (context, state) => {

@@ -1,6 +1,6 @@
 import type {
-	ComponentSystemCallbacks,
-	ComponentSystemWorld,
+	EntityWorkerSystemCallbacks,
+	EntityWorkerSystemWorld,
 	EntityQueryComponents,
 } from '@daneren2005/shared-memory-ecs';
 
@@ -14,13 +14,13 @@ import { AIControllerIndex, createPatrolChaseUpdate, PatrolChaseState } from './
 import type { PatrolChaseBlocks, PatrolChaseComponents } from './patrol-chase';
 import { AIStatus } from '../../index';
 
-const world: ComponentSystemWorld = {
+const world: EntityWorkerSystemWorld = {
 	gameTime: 0,
 	elapsedTime: 1,
 	getString: () => '',
 };
 
-const callbacks: ComponentSystemCallbacks<PatrolChaseComponents> = {
+const callbacks: EntityWorkerSystemCallbacks<PatrolChaseComponents> = {
 	entityComponentChanged() {},
 	emitEntityEvent() {},
 	emitSystemEvent() {},

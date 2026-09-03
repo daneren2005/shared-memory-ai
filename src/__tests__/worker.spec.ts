@@ -1,8 +1,8 @@
 import type {
 	BaseComponent,
 	ComponentMap,
-	ComponentSystemCallbacks,
-	ComponentSystemWorld,
+	EntityWorkerSystemCallbacks,
+	EntityWorkerSystemWorld,
 	EntityQueryComponents,
 	EntityUpdateComponents,
 	UpdateEntityConfigObject,
@@ -27,13 +27,13 @@ interface TestBlocks extends EntityUpdateComponents<TestComponents> {
 	agent: Uint32Array
 }
 
-const world: ComponentSystemWorld = {
+const world: EntityWorkerSystemWorld = {
 	gameTime: 100,
 	elapsedTime: 16,
 	getString: () => '',
 };
 
-function createCallbacks(entityEvents: Array<[number, string]> = []): ComponentSystemCallbacks<TestComponents> {
+function createCallbacks(entityEvents: Array<[number, string]> = []): EntityWorkerSystemCallbacks<TestComponents> {
 	return {
 		entityComponentChanged() {},
 		emitEntityEvent(entityId, event) {
@@ -85,7 +85,7 @@ describe('worker-native behavior primitives', () => {
 		const statuses: Array<[number, number]> = [];
 		const entityEvents: Array<[number, string]> = [];
 		const callbacks = createCallbacks(entityEvents);
-		const behavior = createAIUpdate<TestComponents, TestBlocks, ComponentSystemWorld, { ticks: number }>({
+		const behavior = createAIUpdate<TestComponents, TestBlocks, EntityWorkerSystemWorld, { ticks: number }>({
 			createMemory: () => ({ ticks: 0 }),
 			run(context, memory) {
 				expect(context.agents.byId.has(context.entityId)).toBe(true);
@@ -127,7 +127,7 @@ describe('worker-native behavior primitives', () => {
 	it('cleans memory on entity removal and world reload without creating phantom entries', () => {
 		const removed: Array<[number, number | undefined]> = [];
 		const callbacks = createCallbacks();
-		const behavior = createAIUpdate<TestComponents, TestBlocks, ComponentSystemWorld, { ticks: number }>({
+		const behavior = createAIUpdate<TestComponents, TestBlocks, EntityWorkerSystemWorld, { ticks: number }>({
 			createMemory: () => ({ ticks: 0 }),
 			run(_context, memory) {
 				memory.ticks++;
@@ -160,7 +160,7 @@ describe('worker-native behavior primitives', () => {
 		callbacks.emitEntityEvent = () => {
 			emittedEvents++;
 		};
-		const behavior = createAIUpdate<TestComponents, TestBlocks, ComponentSystemWorld, { ticks: number }>({
+		const behavior = createAIUpdate<TestComponents, TestBlocks, EntityWorkerSystemWorld, { ticks: number }>({
 			createMemory: () => ({ ticks: 0 }),
 			run(context, memory) {
 				contexts.add(context);

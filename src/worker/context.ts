@@ -1,7 +1,7 @@
 import type {
 	ComponentMap,
-	ComponentSystemCallbacks,
-	ComponentSystemWorld,
+	EntityWorkerSystemCallbacks,
+	EntityWorkerSystemWorld,
 	EntityUpdateComponents,
 } from '@daneren2005/shared-memory-ecs';
 
@@ -15,7 +15,7 @@ export interface WorkerEventPort {
 export interface AIContext<
 	C extends ComponentMap,
 	T extends EntityUpdateComponents<C> = EntityUpdateComponents<C>,
-	W extends ComponentSystemWorld = ComponentSystemWorld,
+	W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld,
 > {
 	readonly entityId: number
 	readonly components: T
@@ -27,7 +27,7 @@ export interface AIContext<
 	readonly events: WorkerEventPort
 }
 
-export interface MutableAIContext<C extends ComponentMap, T extends EntityUpdateComponents<C>, W extends ComponentSystemWorld> extends AIContext<C, T, W> {
+export interface MutableAIContext<C extends ComponentMap, T extends EntityUpdateComponents<C>, W extends EntityWorkerSystemWorld> extends AIContext<C, T, W> {
 	entityId: number
 	components: T
 	world: W
@@ -36,8 +36,8 @@ export interface MutableAIContext<C extends ComponentMap, T extends EntityUpdate
 export function createMutableAIContext<
 	C extends ComponentMap,
 	T extends EntityUpdateComponents<C>,
-	W extends ComponentSystemWorld,
->(queries: EntityQueryIndex<C>, agents: IndexedEntityCollection<T>, callbacks: ComponentSystemCallbacks<C>): MutableAIContext<C, T, W> {
+	W extends EntityWorkerSystemWorld,
+>(queries: EntityQueryIndex<C>, agents: IndexedEntityCollection<T>, callbacks: EntityWorkerSystemCallbacks<C>): MutableAIContext<C, T, W> {
 	let context: MutableAIContext<C, T, W>;
 	const events: WorkerEventPort = {
 		emitEntity: (event, ...args) => callbacks.emitEntityEvent(context.entityId, event, ...args),

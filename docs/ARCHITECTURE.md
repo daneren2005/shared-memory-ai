@@ -21,8 +21,8 @@ An abstract AI runtime built on `@daneren2005/shared-memory-ecs`. The published 
 | `src/__tests__/examples/` | Concrete patrol, movement, trader, shared-cargo, attack, and standard behavior-tree node fixtures with colocated specifications. Excluded from `dist`. |
 | `examples/src/world.ts` | Example ECS registry, types, and world factory. |
 | `examples/src/patrol-components.ts` | Game-owned shared component definitions used by the examples. |
-| `examples/src/patrol-systems.ts` | Patrol and movement `ComponentSystem` wiring over test fixtures. |
-| `examples/src/domain-systems.ts` | Trader and attack `ComponentSystem` wiring over test fixtures. |
+| `examples/src/patrol-systems.ts` | Patrol and movement `EntityWorkerSystem` wiring over test fixtures. |
+| `examples/src/domain-systems.ts` | Trader and attack `EntityWorkerSystem` wiring over test fixtures. |
 | `examples/src/example.ts` | Example, runtime, and host contracts plus viewport dimensions. |
 | `examples/src/controls.ts` | Declarative slider, toggle, and button controls. |
 | `examples/src/renderer.ts` | Canvas renderer for patrol/chase, trader, and attack state. |

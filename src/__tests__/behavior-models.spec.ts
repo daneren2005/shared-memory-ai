@@ -1,8 +1,8 @@
 import type {
 	BaseComponent,
 	ComponentMap,
-	ComponentSystemCallbacks,
-	ComponentSystemWorld,
+	EntityWorkerSystemCallbacks,
+	EntityWorkerSystemWorld,
 	EntityUpdateComponents,
 } from '@daneren2005/shared-memory-ecs';
 
@@ -30,7 +30,7 @@ interface ModelBlocks extends EntityUpdateComponents<ModelComponents> {
 	value: Float64Array
 }
 
-const callbacks: ComponentSystemCallbacks<ModelComponents> = {
+const callbacks: EntityWorkerSystemCallbacks<ModelComponents> = {
 	entityComponentChanged() {},
 	emitEntityEvent() {},
 	emitSystemEvent() {},
@@ -57,11 +57,11 @@ describe('behavior tree composites', () => {
 			() => AIStatus.failed,
 			first,
 		]);
-		const behavior = createAIUpdate<ModelComponents, ModelBlocks, ComponentSystemWorld, TreeMemory>({
+		const behavior = createAIUpdate<ModelComponents, ModelBlocks, EntityWorkerSystemWorld, TreeMemory>({
 			createMemory: () => ({ ...createBehaviorTreeMemory(2), calls: new Uint32Array(2) }),
 			run: root,
 		});
-		const world: ComponentSystemWorld = { gameTime: 0, elapsedTime: 1, getString: () => '' };
+		const world: EntityWorkerSystemWorld = { gameTime: 0, elapsedTime: 1, getString: () => '' };
 		const components = { value: new Float64Array(1) };
 
 		behavior.update.preRun?.(world, [{ entityId: 1, components }], {}, callbacks);
@@ -80,11 +80,11 @@ describe('behavior tree composites', () => {
 			memory.calls++;
 			return memory.calls < 2 ? AIStatus.running : AIStatus.succeeded;
 		});
-		const behavior = createAIUpdate<ModelComponents, ModelBlocks, ComponentSystemWorld, TreeMemory>({
+		const behavior = createAIUpdate<ModelComponents, ModelBlocks, EntityWorkerSystemWorld, TreeMemory>({
 			createMemory: () => ({ ...createBehaviorTreeMemory(1), calls: 0 }),
 			run: action,
 		});
-		const world: ComponentSystemWorld = { gameTime: 0, elapsedTime: 1, getString: () => '' };
+		const world: EntityWorkerSystemWorld = { gameTime: 0, elapsedTime: 1, getString: () => '' };
 		const components = { value: new Float64Array(1) };
 
 		behavior.update.preRun?.(world, [{ entityId: 1, components }], {}, callbacks);
@@ -120,11 +120,11 @@ describe('utility selector', () => {
 				},
 			},
 		], { minimumScore: 0.2, commitmentDuration: 10 });
-		const behavior = createAIUpdate<ModelComponents, ModelBlocks, ComponentSystemWorld, SelectionMemory>({
+		const behavior = createAIUpdate<ModelComponents, ModelBlocks, EntityWorkerSystemWorld, SelectionMemory>({
 			createMemory: () => ({ selectedOption: -1, committedUntil: 0, choices: [] }),
 			run: selectorAction,
 		});
-		const mutableWorld: ComponentSystemWorld = { gameTime: 0, elapsedTime: 1, getString: () => '' };
+		const mutableWorld: EntityWorkerSystemWorld = { gameTime: 0, elapsedTime: 1, getString: () => '' };
 		const components = { value: new Float64Array([0.8, 0.4]) };
 
 		behavior.update.preRun?.(mutableWorld, [{ entityId: 1, components }], {}, callbacks);
@@ -143,7 +143,7 @@ describe('utility selector', () => {
 
 function runUpdate(
 	update: ReturnType<typeof createAIUpdate<ModelComponents, ModelBlocks>>['update'],
-	world: ComponentSystemWorld,
+	world: EntityWorkerSystemWorld,
 	components: ModelBlocks,
 ): void {
 	update(world, 1, components, {}, callbacks);

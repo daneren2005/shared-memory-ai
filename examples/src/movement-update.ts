@@ -1,4 +1,4 @@
-import type { ComponentSystemWorld, EntityUpdateComponents, EntityUpdateFunction } from '@daneren2005/shared-memory-ecs';
+import type { EntityWorkerSystemWorld, EntityUpdateComponents, EntityUpdateFunction } from '@daneren2005/shared-memory-ecs';
 
 import { moveTowardDestination } from '../../src/__tests__/examples/movement';
 import type { ExampleComponents } from './patrol-components';
@@ -9,7 +9,7 @@ export interface MovementBlocks extends EntityUpdateComponents<ExampleComponents
 	transform: Float64Array
 }
 
-export interface MovementWorld extends ComponentSystemWorld {
+export interface MovementWorld extends EntityWorkerSystemWorld {
 	speed: number
 }
 
