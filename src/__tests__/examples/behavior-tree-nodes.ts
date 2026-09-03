@@ -1,7 +1,7 @@
 import type {
 	BaseComponent,
 	ComponentMap,
-	ComponentSystemWorld,
+	EntityWorkerSystemWorld,
 	EntityUpdateComponents,
 } from '@daneren2005/shared-memory-ecs';
 import {
@@ -55,7 +55,7 @@ const randomTask: ExampleAction = (_context, memory) => {
 	return memory.randomTicks % 2 === 1 ? AIStatus.running : AIStatus.succeeded;
 };
 
-export function createStandardBehaviorTreeExample<W extends ComponentSystemWorld = ComponentSystemWorld>() {
+export function createStandardBehaviorTreeExample<W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld>() {
 	const root = sequence<BehaviorTreeExampleComponents, BehaviorTreeExampleMemory, BehaviorTreeExampleBlocks>(0, [
 		selector(1, [
 			alwaysFail(task('forced-failure', AIStatus.succeeded)),

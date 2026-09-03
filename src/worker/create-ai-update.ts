@@ -1,6 +1,6 @@
 import type {
 	ComponentMap,
-	ComponentSystemWorld,
+	EntityWorkerSystemWorld,
 	EntityUpdateComponents,
 	EntityUpdateFunction,
 } from '@daneren2005/shared-memory-ecs';
@@ -15,7 +15,7 @@ import type { AIStatus } from './status';
 export interface AIUpdateOptions<
 	C extends ComponentMap,
 	T extends EntityUpdateComponents<C>,
-	W extends ComponentSystemWorld,
+	W extends EntityWorkerSystemWorld,
 	M,
 	D,
 > {
@@ -26,7 +26,7 @@ export interface AIUpdateOptions<
 	onEntityRemoved?(entityId: number, memory: M | undefined): void
 }
 
-export interface AIUpdate<C extends ComponentMap, T extends EntityUpdateComponents<C>, W extends ComponentSystemWorld, D, M> {
+export interface AIUpdate<C extends ComponentMap, T extends EntityUpdateComponents<C>, W extends EntityWorkerSystemWorld, D, M> {
 	readonly update: EntityUpdateFunction<C, T, W, D>
 	readonly memory: EntityMemoryStore<M>
 	readonly queries: EntityQueryIndex<C>
@@ -35,7 +35,7 @@ export interface AIUpdate<C extends ComponentMap, T extends EntityUpdateComponen
 export function createAIUpdate<
 	C extends ComponentMap,
 	T extends EntityUpdateComponents<C>,
-	W extends ComponentSystemWorld = ComponentSystemWorld,
+	W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld,
 	M = Record<string, never>,
 	D = unknown,
 >(options: AIUpdateOptions<C, T, W, M, D>): AIUpdate<C, T, W, D, M> {

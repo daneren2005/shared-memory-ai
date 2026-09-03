@@ -1,4 +1,4 @@
-import type { ComponentSystemCallbacks, ComponentSystemWorld } from '@daneren2005/shared-memory-ecs';
+import type { EntityWorkerSystemCallbacks, EntityWorkerSystemWorld } from '@daneren2005/shared-memory-ecs';
 
 import { AIStatus } from '../../index';
 import {
@@ -9,7 +9,7 @@ import type {
 	BehaviorTreeExampleComponents,
 } from './behavior-tree-nodes';
 
-const callbacks: ComponentSystemCallbacks<BehaviorTreeExampleComponents> = {
+const callbacks: EntityWorkerSystemCallbacks<BehaviorTreeExampleComponents> = {
 	entityComponentChanged() {},
 	emitEntityEvent() {},
 	emitSystemEvent() {},
@@ -20,7 +20,7 @@ const callbacks: ComponentSystemCallbacks<BehaviorTreeExampleComponents> = {
 describe('standard behavior-tree node example', () => {
 	it('exercises tasks, composites, random selection, and every decorator', () => {
 		const behavior = createStandardBehaviorTreeExample();
-		const world: ComponentSystemWorld = { gameTime: 0, elapsedTime: 1, getString: () => '' };
+		const world: EntityWorkerSystemWorld = { gameTime: 0, elapsedTime: 1, getString: () => '' };
 		const components: BehaviorTreeExampleBlocks = { status: new Uint32Array(1) };
 		behavior.update.preRun?.(world, [{ entityId: 1, components }], {}, callbacks);
 
@@ -54,7 +54,7 @@ describe('standard behavior-tree node example', () => {
 
 function run(
 	update: ReturnType<typeof createStandardBehaviorTreeExample>['update'],
-	world: ComponentSystemWorld,
+	world: EntityWorkerSystemWorld,
 	components: BehaviorTreeExampleBlocks,
 ): void {
 	update(world, 1, components, {}, callbacks);

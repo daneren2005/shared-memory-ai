@@ -1,4 +1,4 @@
-import { ComponentSystem } from '@daneren2005/shared-memory-ecs';
+import { EntityWorkerSystem } from '@daneren2005/shared-memory-ecs';
 import type { BaseWorld } from '@daneren2005/shared-memory-ecs';
 
 import { createAttackUpdate } from '../../src/__tests__/examples/attack';
@@ -10,7 +10,7 @@ import type { ExampleComponents, ExampleRegistry } from './patrol-components';
 const traderBehavior = createScalarTraderUpdate(1, 5);
 const attackBehavior = createAttackUpdate({ damage: 10, strikeCooldown: 500, strikeRange: 90, retreatRange: 45 });
 
-export class TraderSystem extends ComponentSystem<ExampleComponents, ScalarTraderBlocks> {
+export class TraderSystem extends EntityWorkerSystem<ExampleComponents, ScalarTraderBlocks> {
 	constructor(world: BaseWorld<ExampleRegistry>, forceMainThread: boolean) {
 		super(world, {
 			name: 'TraderSystem',
@@ -24,7 +24,7 @@ export class TraderSystem extends ComponentSystem<ExampleComponents, ScalarTrade
 	}
 }
 
-export class AttackSystem extends ComponentSystem<ExampleComponents, AttackBlocks> {
+export class AttackSystem extends EntityWorkerSystem<ExampleComponents, AttackBlocks> {
 	constructor(world: BaseWorld<ExampleRegistry>, forceMainThread: boolean) {
 		super(world, {
 			name: 'AttackSystem',

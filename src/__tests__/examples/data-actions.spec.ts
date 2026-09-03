@@ -1,6 +1,6 @@
 import type {
-	ComponentSystemCallbacks,
-	ComponentSystemWorld,
+	EntityWorkerSystemCallbacks,
+	EntityWorkerSystemWorld,
 	EntityQueryComponents,
 } from '@daneren2005/shared-memory-ecs';
 
@@ -24,10 +24,10 @@ function createProtocol(): Uint32Array {
 	return new Uint32Array(new SharedArrayBuffer(Uint32Array.BYTES_PER_ELEMENT * 3));
 }
 
-const world: ComponentSystemWorld = { gameTime: 0, elapsedTime: 1, getString: () => '' };
+const world: EntityWorkerSystemWorld = { gameTime: 0, elapsedTime: 1, getString: () => '' };
 
 describe('scalar trader behavior fixture', () => {
-	const callbacks: ComponentSystemCallbacks<ScalarTraderComponents> = {
+	const callbacks: EntityWorkerSystemCallbacks<ScalarTraderComponents> = {
 		entityComponentChanged() {},
 		emitEntityEvent() {},
 		emitSystemEvent() {},
@@ -66,7 +66,7 @@ describe('scalar trader behavior fixture', () => {
 
 describe('data-oriented attack action', () => {
 	const events: Array<[number, string, Array<unknown>]> = [];
-	const callbacks: ComponentSystemCallbacks<AttackComponents> = {
+	const callbacks: EntityWorkerSystemCallbacks<AttackComponents> = {
 		entityComponentChanged() {},
 		emitEntityEvent(entityId, event, ...args) {
 			events.push([entityId, event, args]);

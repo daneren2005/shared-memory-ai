@@ -1,4 +1,4 @@
-import type { BaseComponent, ComponentMap, ComponentSystemWorld, EntityUpdateComponents } from '@daneren2005/shared-memory-ecs';
+import type { BaseComponent, ComponentMap, EntityWorkerSystemWorld, EntityUpdateComponents } from '@daneren2005/shared-memory-ecs';
 import { AIStatus, createAIUpdate } from '@daneren2005/shared-memory-ai/worker';
 
 import { clearDestination, publishDestination, TransformIndex } from './movement';
@@ -41,7 +41,7 @@ export interface AttackConfig {
 	retreatRange: number
 }
 
-export function createAttackUpdate<W extends ComponentSystemWorld = ComponentSystemWorld>(config: AttackConfig) {
+export function createAttackUpdate<W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld>(config: AttackConfig) {
 	const strikeRangeSquared = config.strikeRange * config.strikeRange;
 	const retreatRangeSquared = config.retreatRange * config.retreatRange;
 	return createAIUpdate<AttackComponents, AttackBlocks, W>({
