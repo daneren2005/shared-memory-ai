@@ -11,6 +11,7 @@ import {
 	cooldown,
 	createAIUpdate,
 	createBehaviorTreeMemory,
+	createFSM,
 	createUtilitySelector,
 	normalizeUtility,
 	selector,
@@ -37,6 +38,41 @@ const callbacks: EntityWorkerSystemCallbacks<ModelComponents> = {
 	entityDied() {},
 	createEntity() {},
 };
+
+describe('finite state machine', () => {
+	it('stores state and evaluates transitions through behavior memory', () => {
+		interface StateMemory {
+			state: number
+			transitionChecks: number
+		}
+		const action = createFSM<ModelComponents, StateMemory, ModelBlocks>({
+			getState: (_context, memory) => memory.state,
+			setState: (_context, memory, state) => {
+				memory.state = state;
+			},
+			states: new Map([[1, () => AIStatus.running]]),
+			transitions: [{
+				from: 0,
+				to: 1,
+				when: (_context, memory) => {
+					memory.transitionChecks++;
+					return true;
+				},
+			}],
+		});
+		const behavior = createAIUpdate<ModelComponents, ModelBlocks, EntityWorkerSystemWorld, StateMemory>({
+			createMemory: () => ({ state: 0, transitionChecks: 0 }),
+			run: action,
+		});
+		const world: EntityWorkerSystemWorld = { gameTime: 0, elapsedTime: 1, getString: () => '' };
+		const components = { value: new Float64Array(1) };
+
+		behavior.update.preRun?.(world, [{ entityId: 1, components }], {}, callbacks);
+		runUpdate(behavior.update, world, components);
+
+		expect(behavior.memory.get(1)).toEqual({ state: 1, transitionChecks: 1 });
+	});
+});
 
 describe('behavior tree composites', () => {
 	it('resumes sequences and selectors from their running child', () => {
@@ -103,17 +139,24 @@ describe('utility selector', () => {
 	it('normalizes scores, applies thresholds, and honors commitment duration', () => {
 		interface SelectionMemory extends UtilityMemory {
 			choices: Array<number>
+			scoreCalls: number
 		}
 		const selectorAction = createUtilitySelector<ModelComponents, SelectionMemory, ModelBlocks>([
 			{
-				score: context => context.components.value[0],
+				score: (context, memory) => {
+					memory.scoreCalls++;
+					return context.components.value[0];
+				},
 				action: (_context, memory) => {
 					memory.choices.push(0);
 					return AIStatus.running;
 				},
 			},
 			{
-				score: context => context.components.value[1],
+				score: (context, memory) => {
+					memory.scoreCalls++;
+					return context.components.value[1];
+				},
 				action: (_context, memory) => {
 					memory.choices.push(1);
 					return AIStatus.running;
@@ -121,7 +164,7 @@ describe('utility selector', () => {
 			},
 		], { minimumScore: 0.2, commitmentDuration: 10 });
 		const behavior = createAIUpdate<ModelComponents, ModelBlocks, EntityWorkerSystemWorld, SelectionMemory>({
-			createMemory: () => ({ selectedOption: -1, committedUntil: 0, choices: [] }),
+			createMemory: () => ({ selectedOption: -1, committedUntil: 0, choices: [], scoreCalls: 0 }),
 			run: selectorAction,
 		});
 		const mutableWorld: EntityWorkerSystemWorld = { gameTime: 0, elapsedTime: 1, getString: () => '' };
@@ -136,6 +179,7 @@ describe('utility selector', () => {
 		runUpdate(behavior.update, mutableWorld, components);
 
 		expect(behavior.memory.get(1).choices).toEqual([0, 0, 1]);
+		expect(behavior.memory.get(1).scoreCalls).toBe(4);
 		expect(normalizeUtility(15, 10, 20)).toBe(0.5);
 		expect(normalizeUtility(30, 10, 20)).toBe(1);
 	});

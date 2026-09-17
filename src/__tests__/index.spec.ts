@@ -17,6 +17,7 @@ describe('aiRegistry', () => {
 			'aiRegistry',
 			'cooldown',
 			'createAIUpdate',
+			'createBehaviorDispatch',
 			'createBehaviorTreeMemory',
 			'createEntityMemoryStore',
 			'createFSM',

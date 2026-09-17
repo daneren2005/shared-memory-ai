@@ -107,7 +107,7 @@ function runChase(context: PatrolContext): AIStatusValue {
 export function createPatrolChaseUpdate<W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld>() {
 	const fsm = createFSM<PatrolChaseComponents, Record<string, never>, PatrolChaseBlocks>({
 		getState: context => context.components.aiController[AIControllerIndex.state],
-		setState: (context, state) => {
+		setState: (context, _memory, state) => {
 			context.components.aiController[AIControllerIndex.state] = state;
 		},
 		states: new Map([[PatrolChaseState.patrol, runPatrol], [PatrolChaseState.chase, runChase]]),

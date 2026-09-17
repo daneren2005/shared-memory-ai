@@ -1,5 +1,7 @@
 export { createAIUpdate } from './worker/create-ai-update';
 export type { AIUpdate, AIUpdateOptions } from './worker/create-ai-update';
+export { createBehaviorDispatch } from './worker/create-behavior-dispatch';
+export type { AIBehavior, BehaviorDispatch, DispatchMemory } from './worker/create-behavior-dispatch';
 export type { AIContext, WorkerEventPort } from './worker/context';
 export { createEntityMemoryStore } from './worker/memory';
 export type { EntityMemoryStore } from './worker/memory';

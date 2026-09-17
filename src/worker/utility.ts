@@ -9,7 +9,7 @@ export interface UtilityMemory {
 }
 
 export interface UtilityOption<C extends ComponentMap, M extends UtilityMemory, T extends EntityUpdateComponents<C>> {
-	readonly score: AIUtility<C, T>
+	readonly score: AIUtility<C, M, T>
 	readonly action: AIAction<C, M, T>
 	readonly minimum?: number
 	readonly maximum?: number
@@ -42,7 +42,7 @@ export function createUtilitySelector<
 		let selectedScore = minimumScore;
 		for(let index = 0; index < options.length; index++) {
 			const option = options[index];
-			let score = normalizeUtility(option.score(context), option.minimum, option.maximum);
+			let score = normalizeUtility(option.score(context, memory), option.minimum, option.maximum);
 			if(index === memory.selectedOption) score += config.hysteresis ?? 0;
 			if(score >= selectedScore) {
 				selectedScore = score;

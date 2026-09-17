@@ -1,4 +1,4 @@
-import type { ComponentMap, EntityUpdateComponents } from '@daneren2005/shared-memory-ecs';
+import type { ComponentMap, EntityUpdateComponents, EntityWorkerSystemWorld } from '@daneren2005/shared-memory-ecs';
 
 import type { AIContext } from './context';
 
@@ -16,14 +16,19 @@ export type AIAction<
 	C extends ComponentMap,
 	M,
 	T extends EntityUpdateComponents<C> = EntityUpdateComponents<C>,
-> = (context: AIContext<C, T>, memory: M) => AIStatus;
+	W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld,
+> = (context: AIContext<C, T, W>, memory: M) => AIStatus;
 
 export type AICriterion<
 	C extends ComponentMap,
+	M = Record<string, never>,
 	T extends EntityUpdateComponents<C> = EntityUpdateComponents<C>,
-> = (context: AIContext<C, T>) => boolean;
+	W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld,
+> = (context: AIContext<C, T, W>, memory: M) => boolean;
 
 export type AIUtility<
 	C extends ComponentMap,
+	M = Record<string, never>,
 	T extends EntityUpdateComponents<C> = EntityUpdateComponents<C>,
-> = (context: AIContext<C, T>) => number;
+	W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld,
+> = (context: AIContext<C, T, W>, memory: M) => number;

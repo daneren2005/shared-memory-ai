@@ -41,14 +41,35 @@ const behavior = createAIUpdate({
 createEntitySystemWorker(self, behavior.update);
 ```
 
+## Dispatching multiple behaviors
+
+`createBehaviorDispatch` routes each entity to one of several behaviors by a numeric key read from the entity — an AI-type id for a strategic planner, a command type for a low-level executor. Every behavior keeps its own isolated memory, so different agent kinds coexist in one worker system without a hand-written `if`/`else` ladder. Adding a new kind is one `register` call.
+
+```ts
+import { createAIUpdate, createBehaviorDispatch } from '@daneren2005/shared-memory-ai/worker';
+
+const dispatch = createBehaviorDispatch(context => context.components.ai[AI_TYPE_INDEX])
+	.register(traderTypeId, traderBehavior)   // each behavior brings its own createMemory + run
+	.register(minerTypeId, minerBehavior)
+	.fallback(idleBehavior);                  // optional; keys with no behavior otherwise report failed
+
+// A dispatch is itself an AIBehavior, so it composes into createAIUpdate like any other.
+const behavior = createAIUpdate({ createMemory: dispatch.createMemory, run: dispatch.run, onEntityRemoved: dispatch.onEntityRemoved, init });
+```
+
+The dispatch allocates a behavior's memory lazily the first time an entity resolves to it and re-allocates only when the key changes, so a stable key (an AI type) allocates once while a changing key (a command type) re-selects each run. Behavior functions stay statically imported; only the selecting key crosses as data.
+
 The worker API includes:
 
 - AI lifecycle statuses and action, criterion, and utility function types.
 - Indexed per-run contexts and automatically cleaned per-entity memory.
+- Behavior dispatch that selects one of many behaviors by a runtime key, each with isolated memory.
 - Numeric FSM transitions.
 - Resumable behavior-tree sequences, selectors, and random selectors.
 - Behavior-tree invert, always-succeed, always-fail, cooldown, and loop decorators.
 - Normalized utility selectors with thresholds, hysteresis, and commitment.
+
+FSM state accessors, transition predicates, actions, and utility scorers all receive the behavior's typed per-entity memory. Keep private control-flow state there; use game-owned shared components only when another worker or the main thread must observe the value.
 
 Behavior-tree tasks are regular `AIAction` functions. Stateful nodes receive a slot in the typed-array memory returned by `createBehaviorTreeMemory`; a slot may be reused only by nodes that cannot be active at the same time. Durations use the same units as `world.gameTime`.
 
