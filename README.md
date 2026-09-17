@@ -2,6 +2,8 @@
 
 AI components and systems built on [`@daneren2005/shared-memory-ecs`](https://github.com/daneren2005/shared-memory-ecs).
 
+Examples at https://daneren2005.github.io/shared-memory-ai/
+
 The published package contains only abstract worker-native FSM, behavior-tree, utility, context, indexing, and lifecycle primitives. Game-specific movement, trading, patrol/chase, cargo, and attack code lives in test/example fixtures and is not shipped in `dist`. `aiRegistry` remains empty until genuinely reusable AI component definitions emerge.
 
 ## Worker-native behaviors
@@ -119,6 +121,8 @@ npm start
 ```
 
 The playground contains selectable patrol/chase, trader, and attack examples. Each imports its concrete behavior from `src/__tests__/examples/` and the generic runtime from the public worker entry, demonstrating how a game owns its component layouts, actions, and transaction rules. Additional executable fixtures in that directory cover the complete behavior-tree node set.
+
+Local development and preview serve the COOP/COEP headers required for `SharedArrayBuffer`. GitHub Pages cannot configure those headers, so the deployed playground loads `coi-serviceworker.min.js`, which installs a same-origin service worker that adds them to responses before reloading under cross-origin isolation. Every push to `production` publishes the examples. Enable **GitHub Actions** as the Pages source in the repository settings.
 
 To copy a local build into a sibling game repository:
 

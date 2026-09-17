@@ -28,6 +28,8 @@ const world: EntityWorkerSystemWorld = { gameTime: 0, elapsedTime: 1, getString:
 
 describe('scalar trader behavior fixture', () => {
 	const callbacks: EntityWorkerSystemCallbacks<ScalarTraderComponents> = {
+		addComponent() {},
+		removeComponent() {},
 		entityComponentChanged() {},
 		emitEntityEvent() {},
 		emitSystemEvent() {},
@@ -67,6 +69,8 @@ describe('scalar trader behavior fixture', () => {
 describe('data-oriented attack action', () => {
 	const events: Array<[number, string, Array<unknown>]> = [];
 	const callbacks: EntityWorkerSystemCallbacks<AttackComponents> = {
+		addComponent() {},
+		removeComponent() {},
 		entityComponentChanged() {},
 		emitEntityEvent(entityId, event, ...args) {
 			events.push([entityId, event, args]);

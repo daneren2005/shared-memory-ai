@@ -21,6 +21,8 @@ const world: EntityWorkerSystemWorld = {
 };
 
 const callbacks: EntityWorkerSystemCallbacks<PatrolChaseComponents> = {
+	addComponent() {},
+	removeComponent() {},
 	entityComponentChanged() {},
 	emitEntityEvent() {},
 	emitSystemEvent() {},

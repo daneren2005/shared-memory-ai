@@ -30,6 +30,8 @@ An abstract AI runtime built on `@daneren2005/shared-memory-ecs`. The published 
 | `examples/src/workers/` | Static worker entries that import concrete fixtures and the abstract worker runtime. |
 | `examples/src/examples/` | Runnable patrol/chase, trader, and attack definitions. |
 | `examples/src/main.ts` | Owns hash navigation, world replacement, worker selection, live stats, and the render loop. |
+| `examples/public/coi-serviceworker.min.js` | Adds COOP/COEP response headers on GitHub Pages so deployed examples can use `SharedArrayBuffer`. |
+| `.github/workflows/pages.yml` | Builds the examples with the repository base path and deploys `examples/dist` to GitHub Pages. |
 
 ## Worker data flow
 
