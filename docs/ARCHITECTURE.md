@@ -15,6 +15,7 @@ An abstract AI runtime built on `@daneren2005/shared-memory-ecs`. The published 
 | `src/worker/query-index.ts` | Per-run entity and named-query arrays plus entity-ID lookup maps. |
 | `src/worker/memory.ts` | Explicit worker-local memory keyed by entity ID. |
 | `src/worker/create-ai-update.ts` | Adapts a code-defined behavior to ECS `init`, `preRun`, update, and removal hooks. |
+| `src/worker/create-behavior-dispatch.ts` | Routes entities to one of several `AIBehavior`s by a numeric key, each with isolated per-entity memory. |
 | `src/worker/fsm.ts` | Numeric finite-state-machine transitions over shared `AIAction` functions. |
 | `src/worker/behavior-tree.ts` | Resumable sequence, selector, and random composites plus loop, cooldown, and result decorators with typed-array state slots. |
 | `src/worker/utility.ts` | Normalized utility selection with thresholds, hysteresis, and commitment. |
@@ -58,6 +59,8 @@ An abstract AI runtime built on `@daneren2005/shared-memory-ecs`. The published 
 - The public exports are intentionally allowlisted by `src/__tests__/index.spec.ts`; game-domain helpers must remain in consumer code or test/example fixtures.
 - Worker behavior functions are statically imported code. Runtime component data may select behavior IDs, but functions are never sent across the worker boundary.
 - `createAIUpdate` rebuilds query ID maps in `preRun`, clears local memory in `init`, and removes an entity's memory in `entityRemoved`.
+- `createBehaviorDispatch` selects a behavior by a runtime numeric key (an AI-type id for a planner, a command type for an executor) and holds each behavior's memory in isolation, re-allocating only when an entity's key changes. It is an `AIBehavior`, so it composes into `createAIUpdate` like any other. Behavior functions remain statically imported code; only the selecting key crosses as data.
+- `AIAction`, `AICriterion`, and `AIUtility` receive the behavior's typed per-entity memory. `createFSM` also passes it to state accessors and transition predicates, so FSM state can remain worker-local when no other system needs it.
 - Stateful behavior-tree nodes use explicit numeric slots in per-entity typed-array memory. Random choices persist while their task is running, and cooldown durations use `world.gameTime` units.
 - An `AIContext` is reused across the agents in one run and must not be retained by actions. Persistent action state belongs in an AI-owned component or the provided entity memory store.
 - The AI worker may directly write only AI-owned component fields and exclusively owned heap structures. `WorkerEventPort` is limited to entity and system events intended for presentation consequences.
