@@ -35,6 +35,8 @@ const world: EntityWorkerSystemWorld = {
 
 function createCallbacks(entityEvents: Array<[number, string]> = []): EntityWorkerSystemCallbacks<TestComponents> {
 	return {
+		addComponent() {},
+		removeComponent() {},
 		entityComponentChanged() {},
 		emitEntityEvent(entityId, event) {
 			entityEvents.push([entityId, event]);

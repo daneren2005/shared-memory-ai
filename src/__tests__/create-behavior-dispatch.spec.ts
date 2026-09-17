@@ -24,6 +24,8 @@ interface DispatchBlocks extends EntityUpdateComponents<DispatchComponents> {
 const KIND_INDEX = 0;
 
 const callbacks: EntityWorkerSystemCallbacks<DispatchComponents> = {
+	addComponent() {},
+	removeComponent() {},
 	entityComponentChanged() {},
 	emitEntityEvent() {},
 	emitSystemEvent() {},

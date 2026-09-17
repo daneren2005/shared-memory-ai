@@ -10,6 +10,8 @@ import type {
 } from './behavior-tree-nodes';
 
 const callbacks: EntityWorkerSystemCallbacks<BehaviorTreeExampleComponents> = {
+	addComponent() {},
+	removeComponent() {},
 	entityComponentChanged() {},
 	emitEntityEvent() {},
 	emitSystemEvent() {},

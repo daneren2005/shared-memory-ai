@@ -32,6 +32,8 @@ interface ModelBlocks extends EntityUpdateComponents<ModelComponents> {
 }
 
 const callbacks: EntityWorkerSystemCallbacks<ModelComponents> = {
+	addComponent() {},
+	removeComponent() {},
 	entityComponentChanged() {},
 	emitEntityEvent() {},
 	emitSystemEvent() {},
