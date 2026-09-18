@@ -5,6 +5,7 @@
 	"version": "1.0.0",
 	"type": "module",
 	"sideEffects": false,
+	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/daneren2005/shared-memory-ai.git"
