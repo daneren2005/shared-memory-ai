@@ -77,7 +77,9 @@ export function createBehaviorDispatch<
 			return chosen ? chosen.run(context, memory.inner) : AIStatus.failed;
 		},
 		onEntityRemoved(entityId, memory) {
-			if(!memory) return;
+			if(!memory) {
+				return;
+			}
 			const chosen = behaviors.get(memory.key) ?? fallbackBehavior;
 			chosen?.onEntityRemoved?.(entityId, memory.inner);
 		},

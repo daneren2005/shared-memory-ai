@@ -32,6 +32,7 @@ export default defineConfig({
 		'no-unassigned-import': 'off',
 		'prefer-add-event-listener': 'off',
 		'no-underscore-dangle': 'off',
+		curly: ['error', 'all'],
 		'require-await': 'error',
 		'promise/no-multiple-resolved': 'off',
 		'typescript/no-misused-promises': 'error',

@@ -22,8 +22,12 @@ export interface UtilitySelectorConfig {
 }
 
 export function normalizeUtility(score: number, minimum = 0, maximum = 1): number {
-	if(!Number.isFinite(score)) return 0;
-	if(maximum <= minimum) return score >= maximum ? 1 : 0;
+	if(!Number.isFinite(score)) {
+		return 0;
+	}
+	if(maximum <= minimum) {
+		return score >= maximum ? 1 : 0;
+	}
 	return Math.max(0, Math.min(1, (score - minimum) / (maximum - minimum)));
 }
 
@@ -43,7 +47,9 @@ export function createUtilitySelector<
 		for(let index = 0; index < options.length; index++) {
 			const option = options[index];
 			let score = normalizeUtility(option.score(context, memory), option.minimum, option.maximum);
-			if(index === memory.selectedOption) score += config.hysteresis ?? 0;
+			if(index === memory.selectedOption) {
+				score += config.hysteresis ?? 0;
+			}
 			if(score >= selectedScore) {
 				selectedScore = score;
 				selectedOption = index;
@@ -68,7 +74,9 @@ function runSelected<
 	T extends EntityUpdateComponents<C>,
 >(options: ReadonlyArray<UtilityOption<C, M, T>>, context: Parameters<AIAction<C, M, T>>[0], memory: M): AIStatusValue {
 	const option = options[memory.selectedOption];
-	if(!option) return AIStatus.failed;
+	if(!option) {
+		return AIStatus.failed;
+	}
 	const status = option.action(context, memory);
 	if(status !== AIStatus.running) {
 		memory.selectedOption = -1;

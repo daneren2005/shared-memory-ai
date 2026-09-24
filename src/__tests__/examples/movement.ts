@@ -38,7 +38,9 @@ export function moveTowardDestination(
 	speed: number,
 	elapsedTime: number,
 ): AIStatusValue {
-	if(Atomics.load(protocol, MovementProtocolIndex.enabled) === 0) return AIStatus.failed;
+	if(Atomics.load(protocol, MovementProtocolIndex.enabled) === 0) {
+		return AIStatus.failed;
+	}
 	const destinationSequence = Atomics.load(protocol, MovementProtocolIndex.destinationSequence);
 	const dx = desiredMovement[DesiredMovementIndex.x] - transform[TransformIndex.x];
 	const dy = desiredMovement[DesiredMovementIndex.y] - transform[TransformIndex.y];

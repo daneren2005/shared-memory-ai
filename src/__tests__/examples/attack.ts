@@ -82,7 +82,9 @@ export function createAttackUpdate<W extends EntityWorkerSystemWorld = EntityWor
 			}
 			state[AttackStateIndex.phase] = AttackPhase.striking;
 			clearDestination(context.components.movementProtocol);
-			if(context.gameTime < context.components.attackTiming[AttackTimingIndex.nextStrikeTime]) return AIStatus.running;
+			if(context.gameTime < context.components.attackTiming[AttackTimingIndex.nextStrikeTime]) {
+				return AIStatus.running;
+			}
 			targetHealth[HealthIndex.current] = Math.max(0, targetHealth[HealthIndex.current] - config.damage);
 			context.components.attackTiming[0] = context.gameTime + config.strikeCooldown;
 			context.events.emitEntity('attack-strike', targetId);

@@ -75,14 +75,18 @@ export function randomSelector<
 	T extends EntityUpdateComponents<C>,
 >(slot: number, children: ReadonlyArray<AIAction<C, M, T>>, random: () => number = Math.random): AIAction<C, M, T> {
 	return (context, memory): AIStatusValue => {
-		if(children.length === 0) return AIStatus.failed;
+		if(children.length === 0) {
+			return AIStatus.failed;
+		}
 		let childIndex = memory.randomChoices[slot];
 		if(childIndex < 0 || childIndex >= children.length) {
 			childIndex = Math.min(Math.floor(random() * children.length), children.length - 1);
 			memory.randomChoices[slot] = childIndex;
 		}
 		const status = children[childIndex](context, memory);
-		if(status !== AIStatus.running) memory.randomChoices[slot] = -1;
+		if(status !== AIStatus.running) {
+			memory.randomChoices[slot] = -1;
+		}
 		return status;
 	};
 }
@@ -94,7 +98,9 @@ export function invert<
 >(child: AIAction<C, M, T>): AIAction<C, M, T> {
 	return (context, memory): AIStatusValue => {
 		const status = child(context, memory);
-		if(status === AIStatus.running) return status;
+		if(status === AIStatus.running) {
+			return status;
+		}
 		return status === AIStatus.succeeded ? AIStatus.failed : AIStatus.succeeded;
 	};
 }
@@ -126,15 +132,21 @@ export function cooldown<
 	M extends BehaviorTreeMemory,
 	T extends EntityUpdateComponents<C>,
 >(slot: number, duration: number, child: AIAction<C, M, T>): AIAction<C, M, T> {
-	if(duration < 0) throw new RangeError('Behavior-tree cooldown duration cannot be negative');
+	if(duration < 0) {
+		throw new RangeError('Behavior-tree cooldown duration cannot be negative');
+	}
 	return (context, memory): AIStatusValue => {
 		if(memory.activeCooldowns[slot] === 0) {
-			if(context.gameTime < memory.cooldowns[slot]) return AIStatus.failed;
+			if(context.gameTime < memory.cooldowns[slot]) {
+				return AIStatus.failed;
+			}
 			memory.activeCooldowns[slot] = 1;
 			memory.cooldowns[slot] = context.gameTime + duration;
 		}
 		const status = child(context, memory);
-		if(status !== AIStatus.running) memory.activeCooldowns[slot] = 0;
+		if(status !== AIStatus.running) {
+			memory.activeCooldowns[slot] = 0;
+		}
 		return status;
 	};
 }
@@ -150,13 +162,17 @@ export function loop<
 	return (context, memory): AIStatusValue => {
 		while(memory.loopCounts[slot] < count) {
 			const status = child(context, memory);
-			if(status === AIStatus.running) return status;
+			if(status === AIStatus.running) {
+				return status;
+			}
 			if(status === AIStatus.failed) {
 				memory.loopCounts[slot] = 0;
 				return status;
 			}
 			memory.loopCounts[slot]++;
-			if(!Number.isFinite(count)) return AIStatus.running;
+			if(!Number.isFinite(count)) {
+				return AIStatus.running;
+			}
 		}
 		memory.loopCounts[slot] = 0;
 		return AIStatus.succeeded;

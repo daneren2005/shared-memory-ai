@@ -176,7 +176,9 @@ describe('worker-native behavior primitives', () => {
 		}));
 
 		behavior.update.preRun?.(world, agents, {}, callbacks);
-		for(const agent of agents) behavior.update(world, agent.entityId, agent.components, {}, callbacks);
+		for(const agent of agents) {
+			behavior.update(world, agent.entityId, agent.components, {}, callbacks);
+		}
 
 		expect(contexts.size).toBe(1);
 		expect(behavior.memory.size).toBe(5_000);

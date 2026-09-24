@@ -54,15 +54,23 @@ export class SharedCargoTransactions {
 		unitPrice: number,
 	): TradeResultValue {
 		const validation = validateAccounts(trader, station, stationCargoReference, quantity, unitPrice);
-		if(validation !== TradeResult.succeeded || !station || !stationCargoReference) return validation;
+		if(validation !== TradeResult.succeeded || !station || !stationCargoReference) {
+			return validation;
+		}
 		const traderCargo = this.cache.get(traderCargoReference);
 		const stationCargo = this.cache.get(stationCargoReference);
 		const stationQuantity = stationCargo.get(resourceId) ?? 0;
 		const traderQuantity = traderCargo.get(resourceId) ?? 0;
 		const cost = quantity * unitPrice;
-		if(stationQuantity < quantity) return TradeResult.insufficientStock;
-		if(trader[CargoAccountIndex.credits] < cost) return TradeResult.insufficientCredits;
-		if(totalCargo(traderCargo) + quantity > trader[CargoAccountIndex.capacity]) return TradeResult.insufficientCapacity;
+		if(stationQuantity < quantity) {
+			return TradeResult.insufficientStock;
+		}
+		if(trader[CargoAccountIndex.credits] < cost) {
+			return TradeResult.insufficientCredits;
+		}
+		if(totalCargo(traderCargo) + quantity > trader[CargoAccountIndex.capacity]) {
+			return TradeResult.insufficientCapacity;
+		}
 
 		stationCargo.set(resourceId, stationQuantity - quantity);
 		traderCargo.set(resourceId, traderQuantity + quantity);
@@ -81,13 +89,19 @@ export class SharedCargoTransactions {
 		unitPrice: number,
 	): TradeResultValue {
 		const validation = validateAccounts(trader, station, stationCargoReference, quantity, unitPrice);
-		if(validation !== TradeResult.succeeded || !station || !stationCargoReference) return validation;
+		if(validation !== TradeResult.succeeded || !station || !stationCargoReference) {
+			return validation;
+		}
 		const traderCargo = this.cache.get(traderCargoReference);
 		const stationCargo = this.cache.get(stationCargoReference);
 		const traderQuantity = traderCargo.get(resourceId) ?? 0;
 		const cost = quantity * unitPrice;
-		if(traderQuantity < quantity) return TradeResult.insufficientCargo;
-		if(station[CargoAccountIndex.credits] < cost) return TradeResult.insufficientStationCredits;
+		if(traderQuantity < quantity) {
+			return TradeResult.insufficientCargo;
+		}
+		if(station[CargoAccountIndex.credits] < cost) {
+			return TradeResult.insufficientStationCredits;
+		}
 
 		traderCargo.set(resourceId, traderQuantity - quantity);
 		stationCargo.set(resourceId, (stationCargo.get(resourceId) ?? 0) + quantity);
@@ -104,14 +118,22 @@ function validateAccounts(
 	quantity: number,
 	unitPrice: number,
 ): TradeResultValue {
-	if(!Number.isFinite(quantity) || !Number.isFinite(unitPrice) || quantity <= 0 || unitPrice < 0) return TradeResult.invalidQuantity;
-	if(!station || !stationCargoReference || station[CargoAccountIndex.alive] === 0) return TradeResult.missingTarget;
-	if(trader[CargoAccountIndex.alive] === 0) return TradeResult.missingTarget;
+	if(!Number.isFinite(quantity) || !Number.isFinite(unitPrice) || quantity <= 0 || unitPrice < 0) {
+		return TradeResult.invalidQuantity;
+	}
+	if(!station || !stationCargoReference || station[CargoAccountIndex.alive] === 0) {
+		return TradeResult.missingTarget;
+	}
+	if(trader[CargoAccountIndex.alive] === 0) {
+		return TradeResult.missingTarget;
+	}
 	return TradeResult.succeeded;
 }
 
 function totalCargo(cargo: SharedMap<number, Float64Array>): number {
 	let total = 0;
-	for(const [, quantity] of cargo) total += quantity;
+	for(const [, quantity] of cargo) {
+		total += quantity;
+	}
 	return total;
 }

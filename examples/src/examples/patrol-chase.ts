@@ -29,7 +29,9 @@ export const patrolChaseExample: Example = {
 				format: value => `${value} u/s`,
 				change(value) {
 					settings.speed = value;
-					if(host.runtime?.movementSystem) host.runtime.movementSystem.speed = value;
+					if(host.runtime?.movementSystem) {
+						host.runtime.movementSystem.speed = value;
+					}
 				},
 			},
 			{
@@ -43,7 +45,9 @@ export const patrolChaseExample: Example = {
 				change(value) {
 					settings.aggroDistance = value;
 					const patrol = host.runtime?.agent?.components.patrol?.block;
-					if(patrol) patrol[PatrolIndex.aggroDistanceSquared] = value * value;
+					if(patrol) {
+						patrol[PatrolIndex.aggroDistanceSquared] = value * value;
+					}
 				},
 			},
 		];
@@ -65,7 +69,9 @@ export const patrolChaseExample: Example = {
 	},
 	pointerDown(runtime, x, y): void {
 		const transform = runtime.player?.components.transform?.block;
-		if(!transform) return;
+		if(!transform) {
+			return;
+		}
 		transform[TransformIndex.x] = Math.max(20, Math.min(VIEW_WIDTH - 20, x));
 		transform[TransformIndex.y] = Math.max(20, Math.min(VIEW_HEIGHT - 20, y));
 	},

@@ -42,7 +42,9 @@ export function createFSM<
 
 		for(let transitionCount = 0; transitionCount < maxTransitions; transitionCount++) {
 			const transition = config.transitions.find(candidate => candidate.from === state && candidate.when(context, memory));
-			if(!transition) break;
+			if(!transition) {
+				break;
+			}
 			transition.onTransition?.(context, memory);
 			state = transition.to;
 			config.setState(context, memory, state);

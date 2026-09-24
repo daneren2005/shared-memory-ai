@@ -44,11 +44,15 @@ class ExamplesPage implements ExampleHost {
 	}
 
 	pointerDown(x: number, y: number): void {
-		if(this.runtime) this.example.pointerDown?.(this.runtime, x, y);
+		if(this.runtime) {
+			this.example.pointerDown?.(this.runtime, x, y);
+		}
 	}
 
 	step(elapsedTime: number): void {
-		if(!this.runtime) return;
+		if(!this.runtime) {
+			return;
+		}
 		this.runtime.world.update(elapsedTime);
 		this.frames++;
 		this.sinceStats += elapsedTime;
@@ -92,7 +96,9 @@ class ExamplesPage implements ExampleHost {
 
 	private renderStats(): void {
 		const runtime = this.runtime;
-		if(!runtime) return;
+		if(!runtime) {
+			return;
+		}
 		const controller = runtime.agent?.components.aiController?.block;
 		const rows: Record<string, string> = {
 			fps: this.sinceStats > 0 ? Math.round(this.frames * 1_000 / this.sinceStats).toString() : '—',
@@ -142,7 +148,9 @@ interface PageElements {
 
 function requiredElement<T extends HTMLElement>(id: string, type: { new(): T }): T {
 	const element = document.getElementById(id);
-	if(!(element instanceof type)) throw new Error(`The examples page is missing #${id}`);
+	if(!(element instanceof type)) {
+		throw new Error(`The examples page is missing #${id}`);
+	}
 	return element;
 }
 
