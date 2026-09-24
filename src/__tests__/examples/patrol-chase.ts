@@ -73,7 +73,9 @@ function acquireTarget(context: PatrolContext): void {
 	let closestDistance = context.components.patrol[PatrolIndex.aggroDistanceSquared];
 	for(const candidate of context.queries.get('players').entities) {
 		const transform = candidate.components.transform;
-		if(!isPositionBlock(transform)) continue;
+		if(!isPositionBlock(transform)) {
+			continue;
+		}
 		const distance = squaredDistance(context.components.transform, transform);
 		if(distance <= closestDistance) {
 			closestDistance = distance;
@@ -85,7 +87,9 @@ function acquireTarget(context: PatrolContext): void {
 
 function runPatrol(context: PatrolContext): AIStatusValue {
 	const patrol = context.components.patrol;
-	if(hasArrived(context.components.movementProtocol)) patrol[PatrolIndex.activeEndpoint] = patrol[PatrolIndex.activeEndpoint] === 0 ? 1 : 0;
+	if(hasArrived(context.components.movementProtocol)) {
+		patrol[PatrolIndex.activeEndpoint] = patrol[PatrolIndex.activeEndpoint] === 0 ? 1 : 0;
+	}
 	const second = patrol[PatrolIndex.activeEndpoint] === 1;
 	publishDestination(
 		context.components.desiredMovement,
@@ -99,7 +103,9 @@ function runPatrol(context: PatrolContext): AIStatusValue {
 
 function runChase(context: PatrolContext): AIStatusValue {
 	const transform = resolveTarget(context)?.components.transform;
-	if(!isPositionBlock(transform)) return AIStatus.failed;
+	if(!isPositionBlock(transform)) {
+		return AIStatus.failed;
+	}
 	publishDestination(context.components.desiredMovement, context.components.movementProtocol, transform[0], transform[1]);
 	return AIStatus.running;
 }

@@ -31,7 +31,9 @@ export const attackExample: Example = {
 	},
 	pointerDown(runtime, x, y): void {
 		const transform = runtime.target?.components.transform?.block;
-		if(!transform) return;
+		if(!transform) {
+			return;
+		}
 		transform[TransformIndex.x] = Math.max(40, Math.min(VIEW_WIDTH - 40, x));
 		transform[TransformIndex.y] = Math.max(40, Math.min(VIEW_HEIGHT - 40, y));
 	},

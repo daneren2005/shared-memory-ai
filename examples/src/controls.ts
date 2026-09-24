@@ -31,8 +31,12 @@ export function renderControls(container: HTMLElement, controls: Array<Control>)
 }
 
 function renderControl(control: Control): HTMLElement {
-	if(control.kind === 'slider') return renderSlider(control);
-	if(control.kind === 'toggle') return renderToggle(control);
+	if(control.kind === 'slider') {
+		return renderSlider(control);
+	}
+	if(control.kind === 'toggle') {
+		return renderToggle(control);
+	}
 	const row = document.createElement('div');
 	row.className = 'control';
 	const button = document.createElement('button');

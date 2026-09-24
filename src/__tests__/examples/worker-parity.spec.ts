@@ -51,7 +51,9 @@ async function runSequence(forceMainThread: boolean): Promise<Array<Array<number
 		await system.waitForRunToComplete();
 		const controller = agent.components.aiController?.block;
 		const desired = agent.components.desiredMovement?.block;
-		if(!controller || !desired) throw new Error('Patrol test agent is missing required blocks');
+		if(!controller || !desired) {
+			throw new Error('Patrol test agent is missing required blocks');
+		}
 		sequence.push([
 			controller[AIControllerIndex.state],
 			controller[AIControllerIndex.targetEntityId],

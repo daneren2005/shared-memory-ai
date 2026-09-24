@@ -21,7 +21,9 @@ export function startRenderer(canvas: HTMLCanvasElement, host: RenderHost): void
 	canvas.width = VIEW_WIDTH;
 	canvas.height = VIEW_HEIGHT;
 	const context = canvas.getContext('2d');
-	if(!context) throw new Error('Canvas 2D is unavailable');
+	if(!context) {
+		throw new Error('Canvas 2D is unavailable');
+	}
 	const drawingContext: CanvasRenderingContext2D = context;
 
 	canvas.addEventListener('pointerdown', event => {
@@ -68,7 +70,9 @@ function render(context: CanvasRenderingContext2D, runtime: ExampleRuntime | und
 	const patrol = runtime.agent.components.patrol?.block;
 	const controller = runtime.agent.components.aiController?.block;
 	const desired = runtime.agent.components.desiredMovement?.block;
-	if(!agentTransform || !playerTransform || !patrol || !controller || !desired) return;
+	if(!agentTransform || !playerTransform || !patrol || !controller || !desired) {
+		return;
+	}
 
 	const agentX = agentTransform[TransformIndex.x];
 	const agentY = agentTransform[TransformIndex.y];
@@ -120,7 +124,9 @@ function renderTrader(context: CanvasRenderingContext2D, runtime: ExampleRuntime
 	const traderTransform = runtime.agent?.components.transform?.block;
 	const station = runtime.stations?.[0]?.components.stationTrade?.block;
 	const stationTransform = runtime.stations?.[0]?.components.transform?.block;
-	if(!trader || !traderTransform || !station || !stationTransform) return;
+	if(!trader || !traderTransform || !station || !stationTransform) {
+		return;
+	}
 
 	context.strokeStyle = '#334155';
 	context.lineWidth = 3;
@@ -152,7 +158,9 @@ function renderAttack(context: CanvasRenderingContext2D, runtime: ExampleRuntime
 	const desired = runtime.agent?.components.desiredMovement?.block;
 	const targetTransform = runtime.target?.components.transform?.block;
 	const health = runtime.target?.components.health?.block;
-	if(!attackerTransform || !attackState || !desired || !targetTransform || !health) return;
+	if(!attackerTransform || !attackState || !desired || !targetTransform || !health) {
+		return;
+	}
 
 	context.strokeStyle = '#FBBF24';
 	context.beginPath();

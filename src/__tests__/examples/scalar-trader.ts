@@ -39,9 +39,13 @@ export function createScalarTraderUpdate<W extends EntityWorkerSystemWorld = Ent
 				}
 				trader[TraderIndex.targetStationId] = targetId;
 			}
-			if(!station) return AIStatus.failed;
+			if(!station) {
+				return AIStatus.failed;
+			}
 			const result = transactions.buy(trader, station, quantity, unitPrice);
-			if(result === TradeResult.missingTarget) trader[TraderIndex.targetStationId] = 0;
+			if(result === TradeResult.missingTarget) {
+				trader[TraderIndex.targetStationId] = 0;
+			}
 			return result === TradeResult.succeeded ? AIStatus.succeeded : AIStatus.failed;
 		},
 	});

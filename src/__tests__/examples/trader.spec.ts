@@ -11,13 +11,17 @@ import { CargoAccountIndex, SharedCargoTransactions } from './shared-cargo';
 
 function scalarTrader(overrides: Partial<Record<keyof typeof TraderIndex, number>> = {}): Float64Array {
 	const trader = new Float64Array([100, 2, 10, 1, 9]);
-	for(const [name, value] of Object.entries(overrides)) trader[TraderIndex[name as keyof typeof TraderIndex]] = value;
+	for(const [name, value] of Object.entries(overrides)) {
+		trader[TraderIndex[name as keyof typeof TraderIndex]] = value;
+	}
 	return trader;
 }
 
 function scalarStation(overrides: Partial<Record<keyof typeof StationTradeIndex, number>> = {}): Float64Array {
 	const station = new Float64Array([100, 10, 1, 1]);
-	for(const [name, value] of Object.entries(overrides)) station[StationTradeIndex[name as keyof typeof StationTradeIndex]] = value;
+	for(const [name, value] of Object.entries(overrides)) {
+		station[StationTradeIndex[name as keyof typeof StationTradeIndex]] = value;
+	}
 	return station;
 }
 
