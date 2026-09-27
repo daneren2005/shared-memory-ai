@@ -1,4 +1,4 @@
-import type { ComponentMap, EntityUpdateComponents } from '@daneren2005/shared-memory-ecs';
+import type { ComponentMap, EntityUpdateComponents, EntityWorkerSystemWorld } from '@daneren2005/shared-memory-ecs';
 
 import type { AIAction, AIStatus as AIStatusValue, AIUtility } from './status';
 import { AIStatus } from './status';
@@ -8,9 +8,14 @@ export interface UtilityMemory {
 	committedUntil: number
 }
 
-export interface UtilityOption<C extends ComponentMap, M extends UtilityMemory, T extends EntityUpdateComponents<C>> {
-	readonly score: AIUtility<C, M, T>
-	readonly action: AIAction<C, M, T>
+export interface UtilityOption<
+	C extends ComponentMap,
+	M extends UtilityMemory,
+	T extends EntityUpdateComponents<C>,
+	W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld,
+> {
+	readonly score: AIUtility<C, M, T, W>
+	readonly action: AIAction<C, M, T, W>
 	readonly minimum?: number
 	readonly maximum?: number
 }
@@ -35,7 +40,8 @@ export function createUtilitySelector<
 	C extends ComponentMap,
 	M extends UtilityMemory,
 	T extends EntityUpdateComponents<C>,
->(options: ReadonlyArray<UtilityOption<C, M, T>>, config: UtilitySelectorConfig = {}): AIAction<C, M, T> {
+	W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld,
+>(options: ReadonlyArray<UtilityOption<C, M, T, W>>, config: UtilitySelectorConfig = {}): AIAction<C, M, T, W> {
 	return (context, memory): AIStatusValue => {
 		if(memory.selectedOption >= 0 && context.gameTime < memory.committedUntil) {
 			return runSelected(options, context, memory);
@@ -72,7 +78,8 @@ function runSelected<
 	C extends ComponentMap,
 	M extends UtilityMemory,
 	T extends EntityUpdateComponents<C>,
->(options: ReadonlyArray<UtilityOption<C, M, T>>, context: Parameters<AIAction<C, M, T>>[0], memory: M): AIStatusValue {
+	W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld,
+>(options: ReadonlyArray<UtilityOption<C, M, T, W>>, context: Parameters<AIAction<C, M, T, W>>[0], memory: M): AIStatusValue {
 	const option = options[memory.selectedOption];
 	if(!option) {
 		return AIStatus.failed;

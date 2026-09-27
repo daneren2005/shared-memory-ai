@@ -1,4 +1,4 @@
-import type { ComponentMap, EntityUpdateComponents } from '@daneren2005/shared-memory-ecs';
+import type { ComponentMap, EntityUpdateComponents, EntityWorkerSystemWorld } from '@daneren2005/shared-memory-ecs';
 
 import type { AIAction, AIStatus as AIStatusValue } from './status';
 import { AIStatus } from './status';
@@ -29,7 +29,8 @@ export function sequence<
 	C extends ComponentMap,
 	M extends BehaviorTreeMemory,
 	T extends EntityUpdateComponents<C>,
->(slot: number, children: ReadonlyArray<AIAction<C, M, T>>): AIAction<C, M, T> {
+	W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld,
+>(slot: number, children: ReadonlyArray<AIAction<C, M, T, W>>): AIAction<C, M, T, W> {
 	return (context, memory): AIStatusValue => {
 		for(let childIndex = memory.cursors[slot]; childIndex < children.length; childIndex++) {
 			const status = children[childIndex](context, memory);
@@ -51,7 +52,8 @@ export function selector<
 	C extends ComponentMap,
 	M extends BehaviorTreeMemory,
 	T extends EntityUpdateComponents<C>,
->(slot: number, children: ReadonlyArray<AIAction<C, M, T>>): AIAction<C, M, T> {
+	W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld,
+>(slot: number, children: ReadonlyArray<AIAction<C, M, T, W>>): AIAction<C, M, T, W> {
 	return (context, memory): AIStatusValue => {
 		for(let childIndex = memory.cursors[slot]; childIndex < children.length; childIndex++) {
 			const status = children[childIndex](context, memory);
@@ -73,7 +75,8 @@ export function randomSelector<
 	C extends ComponentMap,
 	M extends BehaviorTreeMemory,
 	T extends EntityUpdateComponents<C>,
->(slot: number, children: ReadonlyArray<AIAction<C, M, T>>, random: () => number = Math.random): AIAction<C, M, T> {
+	W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld,
+>(slot: number, children: ReadonlyArray<AIAction<C, M, T, W>>, random: () => number = Math.random): AIAction<C, M, T, W> {
 	return (context, memory): AIStatusValue => {
 		if(children.length === 0) {
 			return AIStatus.failed;
@@ -95,7 +98,8 @@ export function invert<
 	C extends ComponentMap,
 	M,
 	T extends EntityUpdateComponents<C>,
->(child: AIAction<C, M, T>): AIAction<C, M, T> {
+	W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld,
+>(child: AIAction<C, M, T, W>): AIAction<C, M, T, W> {
 	return (context, memory): AIStatusValue => {
 		const status = child(context, memory);
 		if(status === AIStatus.running) {
@@ -109,7 +113,8 @@ export function alwaysSucceed<
 	C extends ComponentMap,
 	M,
 	T extends EntityUpdateComponents<C>,
->(child: AIAction<C, M, T>): AIAction<C, M, T> {
+	W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld,
+>(child: AIAction<C, M, T, W>): AIAction<C, M, T, W> {
 	return (context, memory): AIStatusValue => {
 		const status = child(context, memory);
 		return status === AIStatus.running ? status : AIStatus.succeeded;
@@ -120,7 +125,8 @@ export function alwaysFail<
 	C extends ComponentMap,
 	M,
 	T extends EntityUpdateComponents<C>,
->(child: AIAction<C, M, T>): AIAction<C, M, T> {
+	W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld,
+>(child: AIAction<C, M, T, W>): AIAction<C, M, T, W> {
 	return (context, memory): AIStatusValue => {
 		const status = child(context, memory);
 		return status === AIStatus.running ? status : AIStatus.failed;
@@ -131,7 +137,8 @@ export function cooldown<
 	C extends ComponentMap,
 	M extends BehaviorTreeMemory,
 	T extends EntityUpdateComponents<C>,
->(slot: number, duration: number, child: AIAction<C, M, T>): AIAction<C, M, T> {
+	W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld,
+>(slot: number, duration: number, child: AIAction<C, M, T, W>): AIAction<C, M, T, W> {
 	if(duration < 0) {
 		throw new RangeError('Behavior-tree cooldown duration cannot be negative');
 	}
@@ -155,7 +162,8 @@ export function loop<
 	C extends ComponentMap,
 	M extends BehaviorTreeMemory,
 	T extends EntityUpdateComponents<C>,
->(slot: number, child: AIAction<C, M, T>, count = Number.POSITIVE_INFINITY): AIAction<C, M, T> {
+	W extends EntityWorkerSystemWorld = EntityWorkerSystemWorld,
+>(slot: number, child: AIAction<C, M, T, W>, count = Number.POSITIVE_INFINITY): AIAction<C, M, T, W> {
 	if(count <= 0 || (!Number.isInteger(count) && Number.isFinite(count))) {
 		throw new RangeError('Behavior-tree loop count must be a positive integer or Infinity');
 	}
