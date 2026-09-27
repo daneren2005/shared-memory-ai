@@ -137,6 +137,46 @@ describe('behavior tree composites', () => {
 	});
 });
 
+describe('custom worlds', () => {
+	it('passes a custom world type through composites and utility selectors', () => {
+		interface ModelWorld extends EntityWorkerSystemWorld {
+			threshold: number
+		}
+		interface TreeMemory extends BehaviorTreeMemory, UtilityMemory {
+			picked: number
+		}
+		const root = selector<ModelComponents, TreeMemory, ModelBlocks, ModelWorld>(0, [
+			(context, memory) => {
+				if(context.components.value[0] <= context.world.threshold) {
+					return AIStatus.failed;
+				}
+				memory.picked = 1;
+				return AIStatus.succeeded;
+			},
+			createUtilitySelector<ModelComponents, TreeMemory, ModelBlocks, ModelWorld>([{
+				score: context => context.world.threshold,
+				action: (_context, memory) => {
+					memory.picked = 2;
+					return AIStatus.succeeded;
+				},
+			}]),
+		]);
+		const behavior = createAIUpdate<ModelComponents, ModelBlocks, ModelWorld, TreeMemory>({
+			createMemory: () => ({ ...createBehaviorTreeMemory(1), selectedOption: -1, committedUntil: 0, picked: 0 }),
+			run: root,
+		});
+		const world: ModelWorld = { gameTime: 0, elapsedTime: 1, getString: () => '', threshold: 0.5 };
+		const components = { value: new Float64Array([0.2]) };
+
+		behavior.update.preRun?.(world, [{ entityId: 1, components }], {}, callbacks);
+		behavior.update(world, 1, components, {}, callbacks);
+		expect(behavior.memory.get(1).picked).toBe(2);
+		components.value[0] = 0.8;
+		behavior.update(world, 1, components, {}, callbacks);
+		expect(behavior.memory.get(1).picked).toBe(1);
+	});
+});
+
 describe('utility selector', () => {
 	it('normalizes scores, applies thresholds, and honors commitment duration', () => {
 		interface SelectionMemory extends UtilityMemory {
