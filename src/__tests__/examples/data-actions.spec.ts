@@ -24,6 +24,16 @@ function createProtocol(): Uint32Array {
 	return new Uint32Array(new SharedArrayBuffer(Uint32Array.BYTES_PER_ELEMENT * 3));
 }
 
+function createAgent(): AttackBlocks {
+	return {
+		attackState: new Uint32Array([AttackPhase.moving, 9]),
+		attackTiming: new Float64Array(1),
+		desiredMovement: new Float64Array(2),
+		movementProtocol: createProtocol(),
+		transform: new Float64Array([0, 0]),
+	};
+}
+
 const world: EntityWorkerSystemWorld = { gameTime: 0, elapsedTime: 1, getString: () => '' };
 
 describe('scalar trader behavior fixture', () => {
@@ -80,20 +90,10 @@ describe('data-oriented attack action', () => {
 		createEntity() {},
 	};
 
-	function agent(): AttackBlocks {
-		return {
-			attackState: new Uint32Array([AttackPhase.moving, 9]),
-			attackTiming: new Float64Array(1),
-			desiredMovement: new Float64Array(2),
-			movementProtocol: createProtocol(),
-			transform: new Float64Array([0, 0]),
-		};
-	}
-
 	it('alternates between moving, retreating, and striking phases without command objects', () => {
 		events.length = 0;
 		const behavior = createAttackUpdate({ damage: 5, strikeCooldown: 10, strikeRange: 5, retreatRange: 2 });
-		const attacker = agent();
+		const attacker = createAgent();
 		const targetTransform = new Float64Array([10, 0]);
 		const health = new Float64Array([10]);
 		const targets: EntityQueryComponents<AttackComponents> = {
@@ -127,7 +127,7 @@ describe('data-oriented attack action', () => {
 
 	it('fails safely and clears a target removed from its query', () => {
 		const behavior = createAttackUpdate({ damage: 5, strikeCooldown: 10, strikeRange: 5, retreatRange: 2 });
-		const attacker = agent();
+		const attacker = createAgent();
 		const targets: EntityQueryComponents<AttackComponents> = { attackTargets: [] };
 		behavior.update.preRun?.(world, [{ entityId: 1, components: attacker }], targets, callbacks);
 		behavior.update(world, 1, attacker, targets, callbacks);
