@@ -55,7 +55,8 @@ const dispatch = createBehaviorDispatch(context => context.components.ai[AI_TYPE
 	.register(minerTypeId, minerBehavior)
 	.fallback(idleBehavior);                  // optional; keys with no behavior otherwise report failed
 
-// A dispatch is itself an AIBehavior, so it composes into createAIUpdate like any other.
+// A dispatch is itself an AIBehavior, so it composes into createAIUpdate like any other. `init` takes the same
+// (world, data, entities, queries) as an EntityUpdateFunction's init.
 const behavior = createAIUpdate({ createMemory: dispatch.createMemory, run: dispatch.run, onEntityRemoved: dispatch.onEntityRemoved, init });
 ```
 

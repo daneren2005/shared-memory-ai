@@ -3,6 +3,7 @@ import type {
 	EntityWorkerSystemWorld,
 	EntityUpdateComponents,
 	EntityUpdateFunction,
+	EntityUpdateInitFunction,
 } from '@daneren2005/shared-memory-ecs';
 
 import { createMutableAIContext } from './context';
@@ -22,7 +23,8 @@ export interface AIUpdateOptions<
 	createMemory(entityId: number): M
 	run(context: AIContext<C, T, W>, memory: M): AIStatus
 	onStatus?(context: AIContext<C, T, W>, memory: M, status: AIStatus): void
-	init?(data: D | undefined): Partial<W> | void
+	// Same arguments as EntityUpdateFunction.init: entities present at load arrive here, never through queryChanged.
+	init?: EntityUpdateInitFunction<W, D, C, T>
 	onEntityRemoved?(entityId: number, memory: M | undefined): void
 }
 
@@ -68,12 +70,12 @@ export function createAIUpdate<
 		memory.remove(entityId);
 	};
 
-	update.init = data => {
+	update.init = (world, data, entities, queryComponents) => {
 		memory.reset();
 		agents.clear();
 		queries.clear();
 		context = undefined;
-		return options.init?.(data);
+		return options.init?.(world, data, entities, queryComponents);
 	};
 
 	return { update, memory, queries };

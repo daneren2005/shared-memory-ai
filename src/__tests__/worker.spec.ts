@@ -151,8 +151,23 @@ describe('worker-native behavior primitives', () => {
 		behavior.update.preRun?.(world, [{ entityId: 2, components }], queries, callbacks);
 		behavior.update(world, 2, components, queries, callbacks);
 		expect(behavior.memory.size).toBe(1);
-		behavior.update.init?.(undefined);
+		behavior.update.init?.(world, undefined, [], {});
 		expect(behavior.memory.size).toBe(0);
+	});
+
+	it('hands init the loaded entities and queries so state can be seeded from them', () => {
+		interface SeededWorld extends EntityWorkerSystemWorld {
+			seeded?: Array<number | undefined>
+		}
+		const behavior = createAIUpdate<TestComponents, TestBlocks, SeededWorld, Record<string, never>, number>({
+			createMemory: () => ({}),
+			run: () => AIStatus.running,
+			init: (_world, data, entities, queries) => ({ seeded: [data, ...entities.map(entity => entity.entityId), ...(queries.targets ?? []).map(target => target.entityId)] }),
+		});
+		const agents = [{ entityId: 1, components: { agent: new Uint32Array(1) } }];
+		const targets = [{ entityId: 7, components: { target: new Float32Array(2) } }];
+
+		expect(behavior.update.init?.(world, 3, agents, { targets })).toEqual({ seeded: [3, 1, 7] });
 	});
 
 	it('reuses one context while updating thousands of agents without events or per-agent messages', () => {
