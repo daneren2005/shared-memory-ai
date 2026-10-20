@@ -4,6 +4,7 @@ import type {
 	EntityUpdateComponents,
 	EntityUpdateFunction,
 	EntityUpdateInitFunction,
+	EntityQueryChangedFunction,
 } from '@daneren2005/shared-memory-ecs';
 
 import { createMutableAIContext } from './context';
@@ -25,6 +26,8 @@ export interface AIUpdateOptions<
 	onStatus?(context: AIContext<C, T, W>, memory: M, status: AIStatus): void
 	// Same arguments as EntityUpdateFunction.init: entities present at load arrive here, never through queryChanged.
 	init?: EntityUpdateInitFunction<W, D, C, T>
+	// Pass this rather than assigning update.queryChanged, which would stop the query indexes following their deltas.
+	queryChanged?: EntityQueryChangedFunction<C, W>
 	onEntityRemoved?(entityId: number, memory: M | undefined): void
 }
 
@@ -64,6 +67,11 @@ export function createAIUpdate<
 		context = undefined;
 	};
 
+	update.queryChanged = (world, queryName, delta, callbacks) => {
+		queries.apply(queryName, delta);
+		options.queryChanged?.(world, queryName, delta, callbacks);
+	};
+
 	update.entityRemoved = (_world, entityId) => {
 		const entityMemory = memory.getIfPresent(entityId);
 		options.onEntityRemoved?.(entityId, entityMemory);
@@ -74,6 +82,8 @@ export function createAIUpdate<
 		memory.reset();
 		agents.clear();
 		queries.clear();
+		// The worker keeps these arrays and updates them in place, so deltas keep the ids current from here on.
+		queries.prepare(queryComponents);
 		context = undefined;
 		return options.init?.(world, data, entities, queryComponents);
 	};

@@ -68,6 +68,44 @@ describe('worker-native behavior primitives', () => {
 		expect(index.get('targets').byId.has(7)).toBe(false);
 	});
 
+	it('keeps ids from query deltas while the query array stays the same', () => {
+		const index = new EntityQueryIndex<TestComponents>();
+		const first = { entityId: 7, components: { target: new Float32Array([4, 8]) } };
+		const targets = [first];
+		index.prepare({ targets });
+
+		const replaced = { entityId: 7, components: { target: new Float32Array([1, 2]) } };
+		const added = { entityId: 9, components: { target: new Float32Array([3, 4]) } };
+		targets.splice(0, 1, replaced, added);
+		index.apply('targets', { added: [replaced, added], removed: [] });
+		index.prepare({ targets });
+		expect(index.get('targets').byId.get(7)).toBe(replaced);
+		expect(index.get('targets').byId.get(9)).toBe(added);
+
+		targets.splice(0, 1);
+		index.apply('targets', { added: [], removed: [7] });
+		index.prepare({ targets });
+		expect(index.get('targets').byId.has(7)).toBe(false);
+		expect(index.get('targets').entities).toBe(targets);
+	});
+
+	it('forwards query changes to the caller after updating its indexes', () => {
+		const targets = [{ entityId: 3, components: { target: new Float32Array(2) } }];
+		const seen: Array<boolean> = [];
+		const behavior = createAIUpdate<TestComponents, TestBlocks>({
+			createMemory: () => ({}),
+			run: () => AIStatus.succeeded,
+			queryChanged: (_world, name) => {
+				seen.push(behavior.queries.get(name).byId.has(4));
+			},
+		});
+		behavior.update.init?.({ gameTime: 0, getString: () => '' }, undefined, [], { targets });
+		const added = { entityId: 4, components: { target: new Float32Array(2) } };
+		targets.push(added);
+		behavior.update.queryChanged?.({ gameTime: 0, elapsedTime: 0, getString: () => '' }, 'targets', { added: [added], removed: [] }, createCallbacks([]));
+		expect(seen).toEqual([true]);
+	});
+
 	it('creates, removes, and resets per-entity memory', () => {
 		const store = createEntityMemoryStore(entityId => ({ entityId, ticks: 0 }));
 

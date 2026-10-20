@@ -2,6 +2,7 @@ import type {
 	ComponentMap,
 	EntityQueryComponents,
 	EntityUpdateComponents,
+	QueryDelta,
 	UpdateEntityConfigObject,
 } from '@daneren2005/shared-memory-ecs';
 
@@ -26,24 +27,40 @@ export class EntityQueryIndex<C extends ComponentMap> {
 		return this.indexes.get(name) ?? this.emptyIndex;
 	}
 
+	// Ids are kept from `apply`, so a run only rebuilds an index whose query array was swapped for another.
 	prepare(queries: EntityQueryComponents<C>): void {
-		for(const index of this.indexes.values()) {
-			index.entities = this.emptyIndex.entities;
-			index.byId.clear();
+		for(const [name, index] of this.indexes) {
+			if(!(name in queries)) {
+				index.entities = this.emptyIndex.entities;
+				index.byId.clear();
+			}
 		}
 
 		for(const [name, entities] of Object.entries(queries)) {
-			let index = this.indexes.get(name);
+			const index = this.indexes.get(name);
 			if(!index) {
-				index = { entities, byId: new Map() };
-				this.indexes.set(name, index);
-			} else {
+				this.indexes.set(name, { entities, byId: new Map(entities.map(entity => [entity.entityId, entity])) });
+			} else if(index.entities !== entities) {
 				index.entities = entities;
+				index.byId.clear();
+				for(const entity of entities) {
+					index.byId.set(entity.entityId, entity);
+				}
 			}
+		}
+	}
 
-			for(const entity of entities) {
-				index.byId.set(entity.entityId, entity);
-			}
+	// Mirrors the worker's own query store: removals first, then upserts.
+	apply(name: string, delta: QueryDelta<EntityUpdateComponents<C>>): void {
+		const index = this.indexes.get(name);
+		if(!index) {
+			return;
+		}
+		for(const entityId of delta.removed) {
+			index.byId.delete(entityId);
+		}
+		for(const entity of delta.added) {
+			index.byId.set(entity.entityId, entity);
 		}
 	}
 
